@@ -1,61 +1,36 @@
-//https://contest.yandex.ru/contest/22450/run-report/86916520/
-
-
 #include <iostream>
 #include <vector>
-
-#define INT_MAX 2147483647
 
 using namespace std;
 
 
-vector <int> nearestZero(const vector <int> &numberList) {
-	vector <int> result;
+int GetWeatherRandomness(const vector <int> &temperatures) {
 	int counter = 0;
-	int zeroFlag = 0;
-
-	for (int i = 0; i < numberList.size(); ++i) {
-		if (numberList[i] == 0) {
-			zeroFlag = 1;
-			counter = 0;
-		}
-		if (zeroFlag == 0) {
-			result.push_back(INT_MAX);
-		}
-		else {
-			result.push_back(counter);
-			counter++;
-		}
-	}
-
-	counter = 0;
-	zeroFlag = 0;
-	for (int i = numberList.size() - 1; i >= 0 ; --i) {
-		if (numberList[i] == 0) {
-			zeroFlag = 1;
-			counter = 0;
-		}
-		if (zeroFlag == 1) {
-			if (counter < result[i])
-				result[i] = counter;
-			counter++;
-		}
-	}
-
-	return result;
+	if (temperatures.size() == 1)
+    	return 1;
+	for(int i = 0; i < temperatures.size(); ++i) {
+    	if(i == 0 && i + 1 < temperatures.size())
+        	if(temperatures[i] > temperatures[i + 1])
+        		counter++;
+    	if(i == temperatures.size() - 1 && i - 1 >= 0)
+        	if(temperatures[i] > temperatures[i - 1])
+        		counter++;
+        if(i + 1 < temperatures.size() && i - 1 >= 0)
+        	if(temperatures[i] > temperatures[i - 1] && temperatures[i] > temperatures[i + 1])
+        		counter++;   	
+    }
+	return counter;
 }
 
-void print(const vector <int> &result) {
-	for (int x : result)
-		cout << x << " ";
-	cout << endl;
+void print(int result) {
+	cout << result << endl;
 }
 
 int main() {
 	int n;
 	cin >> n;
-	vector <int> numberList(n);
+	vector <int> temperatures(n);
 	for (int i = 0; i < n; ++i)
-		cin >> numberList[i];
-	print(nearestZero(numberList));
+		cin >> temperatures[i];
+	print(GetWeatherRandomness(temperatures));
 }
