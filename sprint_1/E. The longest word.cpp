@@ -34,7 +34,7 @@ int main() {
 	int n;
 	cin >> n;
 	string line;
-	getline(cin, line);
+		
 	getline(cin, line);
 	print(GetLongestWord(line));
 }
