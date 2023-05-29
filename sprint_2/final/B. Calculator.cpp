@@ -1,5 +1,5 @@
 /*
-ID решения - 87719558
+ID решения - 87787458
 
 -- ПРИНЦИП РАБОТЫ --
 Я реализовал калькулятор на стеке.
@@ -22,6 +22,8 @@ ID решения - 87719558
 #include <iostream>
 #include <string>
 #include <vector>
+#include <map>
+#include <functional>
 
 using namespace std;
 
@@ -60,39 +62,32 @@ vector<string> split(string str, char separator) {
 int main() {
 	string expression;
 	getline(cin, expression);
+	
 	Stack stack;
 	vector<string> parsed_expression = split(expression, ' ');
+
+	std::map<string, std::function<string(string,string)>> operators;
+	operators["+"] = [](const string& first, const string& second){return to_string(stoi(first) + stoi(second));};
+	operators["-"] = [](const string& first, const string& second){return to_string(stoi(first) - stoi(second));};
+	operators["*"] = [](const string& first, const string& second){return to_string(stoi(first) * stoi(second));};
+	operators["/"] = [](const string& first, const string& second){return stoi(first) % stoi(second)  < 0 ?
+																   to_string(stoi(first) / stoi(second) - 1) :
+																   to_string(stoi(first) / stoi(second));};
+
 	string left, right;
 	for (const string& elem : parsed_expression) {
-		
+
 		if (elem == "+" || elem == "-" || elem == "*" || elem == "/" ) {
 			right = stack.pop();
 			left = stack.pop();
-			if (elem == "+") {
-				stack.push(to_string(stoi(left) + stoi(right)));
-			}
-			else if (elem == "-") {
-				stack.push(to_string(stoi(left) - stoi(right)));
-			}
-			else if (elem == "*") {
-				stack.push(to_string(stoi(left) * stoi(right)));
-			}
-			else if (elem == "/") {
-
-				if (stoi(left) % stoi(right)  < 0){
-					stack.push(to_string(stoi(left) / stoi(right) - 1));
-				}
-				else {
-					stack.push(to_string(stoi(left) / stoi(right)));
-				}
-			}
+			stack.push(operators[elem](left, right));
 		}
 		else{
 			stack.push(elem);
 		}
 	}
-	
-	cout << stack.pop() << endl;
+
+	cout << stack.pop() << "\n";
 
 	return 0;
 }
