@@ -1,5 +1,5 @@
 /*
-ID решения - 87787458
+ID решения - 87788641
 
 -- ПРИНЦИП РАБОТЫ --
 Я реализовал калькулятор на стеке.
@@ -66,21 +66,19 @@ int main() {
 	Stack stack;
 	vector<string> parsed_expression = split(expression, ' ');
 
-	std::map<string, std::function<string(string,string)>> operators;
-	operators["+"] = [](const string& first, const string& second){return to_string(stoi(first) + stoi(second));};
-	operators["-"] = [](const string& first, const string& second){return to_string(stoi(first) - stoi(second));};
-	operators["*"] = [](const string& first, const string& second){return to_string(stoi(first) * stoi(second));};
-	operators["/"] = [](const string& first, const string& second){return stoi(first) % stoi(second)  < 0 ?
-																   to_string(stoi(first) / stoi(second) - 1) :
-																   to_string(stoi(first) / stoi(second));};
+	std::map<string, std::function<int(int,int)>> operators;
+	operators["+"] = [](int first, int second){return first + second;};
+	operators["-"] = [](int first, int second){return first - second;};
+	operators["*"] = [](int first, int second){return first * second;};
+	operators["/"] = [](int first, int second){return first % second  < 0 ? first / second - 1 : first / second;};
 
 	string left, right;
 	for (const string& elem : parsed_expression) {
 
-		if (elem == "+" || elem == "-" || elem == "*" || elem == "/" ) {
+		if (operators.find(elem) != operators.end()) {
 			right = stack.pop();
 			left = stack.pop();
-			stack.push(operators[elem](left, right));
+			stack.push(to_string(operators[elem](stoi(left), stoi(right))));
 		}
 		else{
 			stack.push(elem);
